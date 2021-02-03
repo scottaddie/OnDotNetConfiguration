@@ -22,11 +22,10 @@ namespace BlazorServerConfiguration
             services.AddOptions<StockOptions>()
                     .Bind(Configuration.GetSection(nameof(StockOptions)))
                     .ValidateDataAnnotations();
-
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSignalR()
-                    .AddAzureSignalR();
+                    .AddAzureSignalR(Configuration["Azure:SignalR:ConnectionString"]);
             services.AddMemoryCache();
             services.AddHttpClient();
             services.AddSingleton<StockService>();
