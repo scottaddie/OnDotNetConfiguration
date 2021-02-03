@@ -2,8 +2,8 @@
 {
     public class StockRequest
     {
-        public string Symbol { get; set; } = null!;
-        public string Region { get; set; } = null!;
+        public string Symbol { get; init; } = null!;
+        public RegionCode Region { get; init; }
     }
 
     public enum RegionCode

@@ -5,18 +5,17 @@ namespace BlazorServerConfiguration.Models
     public class StockOptions
     {
         [Required]
-        public string ApiKey { get; set; } = null!;
+        public string ApiKey { get; init; } = null!;
         
         [Required]
-        public string Endpoint { get; set; } = null!;
+        public string Endpoint { get; init; } = null!;
 
         [Required]
-        public string HostName { get; set; } = null!;
+        public string HostName { get; init; } = null!;
         
-        [Required]
-        public string RegionCode { get; set; } = null!;
+        public RegionCode RegionCode { get; init; }
 
         [Required, StringLength(maximumLength: 5, MinimumLength = 1)]
-        public string TickerSymbol { get; set; } = null!;
+        public string TickerSymbol { get; init; } = null!;
     }
 }

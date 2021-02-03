@@ -24,7 +24,7 @@
 
         public RegularMarketPrice RegularMarketPrice { get; init; } = null!;
 
-        public RegularMarketChange RegularMarketChange { get; set; }
+        public RegularMarketChange RegularMarketChange { get; init; } = null!;
 
         public RegularMarketChangePercent RegularMarketChangePercent { get; init; } = null!;
 
