@@ -22,12 +22,12 @@ namespace BlazorServerConfiguration.Services
             _cache = cache;
 
             var stockOptions = stockConfiguration.Value;
-            _httpClient.BaseAddress = new Uri(stockOptions.Endpoint);
+            _httpClient.BaseAddress = new(stockOptions.Endpoint);
             _httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Host", stockOptions.HostName);
             _httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Key", stockOptions.ApiKey);
         }
 
-        public async Task<StockStats> GetStatistics(StockRequest request)
+        public async Task<StockStats> GetStatisticsAsync(StockRequest request)
         {
             var cacheKey = $"{request.Symbol}_{request.Region}";
 

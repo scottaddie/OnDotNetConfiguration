@@ -9,7 +9,7 @@
 
 <p>This component demonstrates fetching data from a service.</p>
 
-@if (stockStats == null)
+@if (stockStats is null)
 {
     <p><em>Loading...</em></p>
 }
@@ -44,7 +44,7 @@ else
     private StockStats? stockStats;
 
     protected override async Task OnInitializedAsync() =>
-        stockStats = await StockService.GetStatistics(
+        stockStats = await StockService.GetStatisticsAsync(
             new StockRequest { 
                 Region = StockOptions.Value.RegionCode,
                 Symbol = StockOptions.Value.TickerSymbol,
