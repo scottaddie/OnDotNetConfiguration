@@ -31,7 +31,7 @@ namespace BlazorServerConfiguration.Services
         {
             var cacheKey = $"{request.Symbol}_{request.Region}";
 
-            if (!_cache.TryGetValue(cacheKey, out StockStats stats))
+            if (!_cache.TryGetValue(cacheKey, out StockStats? stats))
             {
                 // key not in cache, so fetch data
 
@@ -50,7 +50,7 @@ namespace BlazorServerConfiguration.Services
                 _cache.Set(cacheKey, stats, cacheEntryOptions);
             }
 
-            return stats;
+            return stats!;
         }
     }
 }
