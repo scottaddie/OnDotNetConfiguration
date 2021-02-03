@@ -1,8 +1,8 @@
 using System;
 
-namespace BlazorServerConfiguration.Data
+namespace BlazorServerConfiguration.Models
 {
-    public class WeatherForecast
+    public class Weather
     {
         public DateTime Date { get; set; }
 

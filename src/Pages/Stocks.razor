@@ -1,0 +1,52 @@
+﻿@page "/stocks"
+
+@using BlazorServerConfiguration.Models
+@using BlazorServerConfiguration.Services
+@inject StockService StockService
+@inject Microsoft.Extensions.Options.IOptions<StockOptions> StockOptions
+
+<h1>Stock Quote</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (stockStats == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h3>Market state: @stockStats.Price.MarketState</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Quote Source</th>
+                <th>Regular Market Price</th>
+                <th>Regular Market Change</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@stockStats.QuoteType.LongName</td>
+                <td>@stockStats.Price.QuoteSourceName</td>
+                <td>@stockStats.Price.ToString()</td>
+                <td class="text-@(stockStats.Price.RegularMarketChangePercent.IsLoss ? "danger" : "success")">
+                    <span class="oi oi-caret-@(stockStats.Price.RegularMarketChangePercent.IsLoss ? "bottom" : "top")" aria-hidden=""true"></span>
+                    @stockStats.Price.RegularMarketChangePercent.Fmt
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+@code {
+    private StockStats? stockStats;
+
+    protected override async Task OnInitializedAsync() =>
+        stockStats = await StockService.GetStatistics(
+            new StockRequest { 
+                Region = StockOptions.Value.RegionCode,
+                Symbol = StockOptions.Value.TickerSymbol,
+            });
+}

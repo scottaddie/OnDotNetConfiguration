@@ -1,3 +1,4 @@
+using BlazorServerConfiguration.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
@@ -11,6 +12,11 @@ namespace BlazorServerConfiguration
 
         static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    if (context.HostingEnvironment.IsProduction())
+                        config.ConfigureKeyVault();
+                })
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }
 }
