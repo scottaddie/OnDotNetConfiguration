@@ -1,13 +1,11 @@
 ﻿@page "/stocks"
 
 @using BlazorServerConfiguration.Models
-@using BlazorServerConfiguration.Services
-@inject StockService StockService
+@inject BlazorServerConfiguration.Services.StockService StockService
 @inject Microsoft.Extensions.Options.IOptions<StockOptions> StockOptions
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
-<h1>Stock Quote</h1>
-
-<p>This component demonstrates fetching data from a service.</p>
+<h1>Stock quote for @Configuration["StockOptions:TickerSymbol"]</h1>
 
 @if (stockStats is null)
 {

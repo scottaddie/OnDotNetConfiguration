@@ -29,7 +29,6 @@ namespace BlazorServerConfiguration
                     .AddAzureSignalR();
             services.AddMemoryCache();
             services.AddHttpClient();
-            services.AddSingleton<WeatherService>();
             services.AddSingleton<StockService>();
         }
 
