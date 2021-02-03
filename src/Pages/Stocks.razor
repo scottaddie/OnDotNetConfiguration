@@ -33,7 +33,7 @@ else
                 <td>@stockStats.Price.ToString()</td>
                 <td class="text-@(stockStats.Price.RegularMarketChangePercent.IsLoss ? "danger" : "success")">
                     <span class="oi oi-caret-@(stockStats.Price.RegularMarketChangePercent.IsLoss ? "bottom" : "top")" aria-hidden="true"></span>
-                    @stockStats.Price.RegularMarketChangePercent.Fmt
+                    @stockStats.Price.RegularMarketChangePercent.Fmt (@stockStats.Price.RegularMarketChange.Fmt)
                 </td>
             </tr>
         </tbody>

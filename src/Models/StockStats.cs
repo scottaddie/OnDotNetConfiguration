@@ -23,7 +23,9 @@
         public string MarketState { get; init; } = null!;
 
         public RegularMarketPrice RegularMarketPrice { get; init; } = null!;
-        
+
+        public RegularMarketChange RegularMarketChange { get; set; }
+
         public RegularMarketChangePercent RegularMarketChangePercent { get; init; } = null!;
 
         public override string ToString() =>
@@ -31,6 +33,11 @@
     }
 
     public class RegularMarketPrice
+    {
+        public string Fmt { get; init; } = null!;
+    }
+
+    public class RegularMarketChange
     {
         public string Fmt { get; init; } = null!;
     }
