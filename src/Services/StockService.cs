@@ -27,7 +27,7 @@ namespace BlazorServerConfiguration.Services
             _httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Key", stockOptions.ApiKey);
         }
 
-        public async Task<StockStats> GetStatisticsAsync(StockRequest request)
+        public async ValueTask<StockStats> GetStatisticsAsync(StockRequest request)
         {
             var cacheKey = $"{request.Symbol}_{request.Region}";
 
