@@ -1,10 +1,11 @@
-﻿namespace BlazorServerConfiguration.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BlazorServerConfiguration.Models
 {
-    public class StockRequest
-    {
-        public string Symbol { get; init; } = null!;
-        public RegionCode Region { get; init; }
-    }
+    public record StockRequest(
+        [Required] string Symbol,
+        RegionCode Region
+    );
 
     public enum RegionCode
     {

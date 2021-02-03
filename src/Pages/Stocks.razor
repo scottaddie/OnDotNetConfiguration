@@ -43,8 +43,8 @@ else
 
     protected override async Task OnInitializedAsync() =>
         stockStats = await StockService.GetStatisticsAsync(
-            new StockRequest { 
-                Region = StockOptions.Value.RegionCode,
-                Symbol = StockOptions.Value.TickerSymbol,
-            });
+            new StockRequest(
+                StockOptions.Value.TickerSymbol,
+                StockOptions.Value.RegionCode
+            ));
 }
