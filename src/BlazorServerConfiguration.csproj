@@ -4,7 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <ProjectUISubcaption>ASP.NET Core 5.0</ProjectUISubcaption>
     <Nullable>enable</Nullable>
-    <UserSecretsId>c7ef6575-4bed-4765-a99a-b217300f85b6</UserSecretsId>
+    <UserSecretsId>$(AssemblyName)</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
