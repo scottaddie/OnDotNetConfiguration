@@ -13,10 +13,11 @@ namespace BlazorServerConfiguration
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration) => 
-            Configuration = configuration;
+        public Startup(IConfiguration configuration, IWebHostEnvironment env) =>
+            (Configuration, HostEnvironment) = (configuration, env);
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment HostEnvironment { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -27,8 +28,13 @@ namespace BlazorServerConfiguration
                     .ValidateDataAnnotations();
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSignalR()
-                    .AddAzureSignalR(Configuration["Azure:SignalR:ConnectionString"]);
+
+            if (HostEnvironment.IsProduction())
+            {
+                services.AddSignalR()
+                        .AddAzureSignalR(Configuration["Azure:SignalR:ConnectionString"]);
+            }
+
             services.AddMemoryCache();
             services.AddHttpClient();
             services.AddSingleton<StockService>();
@@ -36,10 +42,9 @@ namespace BlazorServerConfiguration
 
         public void Configure(
             IApplicationBuilder app,
-            IWebHostEnvironment env,
             ILogger<Startup> logger)
         {
-            if (env.IsDevelopment())
+            if (HostEnvironment.IsDevelopment())
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("Configuration keys");
