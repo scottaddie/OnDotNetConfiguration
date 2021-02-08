@@ -1,17 +1,42 @@
 ﻿@page "/stocks"
 
 @using BlazorServerConfiguration.Models
+@using System.ComponentModel.DataAnnotations
 @inject BlazorServerConfiguration.Services.StockService StockService
 @inject Microsoft.Extensions.Options.IOptions<StockOptions> StockOptions
-@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
-<h1>Stock quote for @Configuration["StockOptions:TickerSymbol"]</h1>
+<h1>Stock quote</h1>
 
-@if (stockStats is null)
-{
-    <p><em>Loading...</em></p>
-}
-else
+<EditForm Model="@quote" OnValidSubmit="@HandleValidSubmitAsync" class="form-inline">
+    <div class="form-group mx-sm-3 mb-2">
+        <label for="tickerSymbol">Ticker symbol:</label>
+        <InputSelect @bind-Value="quote.TickerSymbol" class="form-control" id="tickerSymbol">
+            <option value="AMD">AMD</option>
+            <option value="GME">GME</option>
+            <option value="MSFT">MSFT</option>
+        </InputSelect>
+    </div>
+    <div class="form-group mx-sm-3 mb-2">
+        <label for="regionCode">Region code:</label>
+        <InputSelect @bind-Value="quote.RegionCode" class="form-control" id="regionCode">
+            <option value="US">US</option>
+            <option value="BR">BR</option>
+            <option value="AU">AU</option>
+            <option value="CA">CA</option>
+            <option value="FR">FR</option>
+            <option value="DE">DE</option>
+            <option value="HK">HK</option>
+            <option value="IN">IN</option>
+            <option value="IT">IT</option>
+            <option value="ES">ES</option>
+            <option value="GB">GB</option>
+            <option value="SG">SG</option>
+        </InputSelect>
+    </div>
+    <button type="submit" class="btn btn-primary mb-2">Get Quote</button>
+</EditForm>
+
+@if (stockStats is not null)
 {
     <p>Market state: @stockStats.Price.MarketState</p>
 
@@ -39,12 +64,28 @@ else
 }
 
 @code {
+    private class StockQuote
+    {
+        [Required]
+        public string TickerSymbol { get; set; } = null!;
+
+        public RegionCode RegionCode { get; set; }
+    }
+
+    private StockQuote quote = null!;
     private StockStats? stockStats;
 
-    protected override async Task OnInitializedAsync() =>
+    private async Task HandleValidSubmitAsync() =>
         stockStats = await StockService.GetStatisticsAsync(
             new StockRequest(
-                StockOptions.Value.TickerSymbol,
-                StockOptions.Value.RegionCode
+                quote.TickerSymbol,
+                quote.RegionCode
             ));
+
+    protected override void OnInitialized() =>
+        quote = new StockQuote
+        {
+            TickerSymbol = StockOptions.Value.TickerSymbol,
+            RegionCode = StockOptions.Value.RegionCode
+        };
 }

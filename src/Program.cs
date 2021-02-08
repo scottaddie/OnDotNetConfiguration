@@ -19,6 +19,7 @@ namespace BlazorServerConfiguration
                     if (context.HostingEnvironment.IsProduction())
                         config.ConfigureKeyVault();
 
+                    Console.WriteLine("Configuration sources\n=====================");
                     foreach (var source in config.Sources)
                     {
                         if (source is JsonConfigurationSource jsonSource)
@@ -26,6 +27,7 @@ namespace BlazorServerConfiguration
                         else
                             Console.WriteLine(source.ToString());
                     }
+                    Console.WriteLine("=====================\n");
                 })
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }

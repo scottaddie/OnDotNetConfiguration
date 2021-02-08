@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System.Linq;
+using System.Text;
 
 namespace BlazorServerConfiguration
 {
@@ -31,10 +34,23 @@ namespace BlazorServerConfiguration
             services.AddSingleton<StockService>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env,
+            ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
+                var sb = new StringBuilder();
+                sb.AppendLine("Configuration keys");
+                sb.AppendLine("==================");
+                foreach (var (key, _) in Configuration.AsEnumerable().OrderBy(c => c.Key))
+                {
+                    sb.AppendLine(key);
+                }
+                sb.AppendLine("==================");
+                logger.LogInformation(sb.ToString());
+
                 app.UseDeveloperExceptionPage();
             }
             else
