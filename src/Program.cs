@@ -1,8 +1,6 @@
 using BlazorServerConfiguration.Extensions;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Hosting;
-using System;
 using System.Threading.Tasks;
 
 namespace BlazorServerConfiguration
@@ -18,16 +16,8 @@ namespace BlazorServerConfiguration
                 {
                     if (context.HostingEnvironment.IsProduction())
                         config.ConfigureKeyVault();
-
-                    Console.WriteLine("Configuration sources\n=====================");
-                    foreach (var source in config.Sources)
-                    {
-                        if (source is JsonConfigurationSource jsonSource)
-                            Console.WriteLine($"{source}: {jsonSource.Path}");
-                        else
-                            Console.WriteLine(source.ToString());
-                    }
-                    Console.WriteLine("=====================\n");
+                    else
+                        config.WriteConfigurationSources();
                 })
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }

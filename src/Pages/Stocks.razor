@@ -77,10 +77,7 @@
 
     private async Task HandleValidSubmitAsync() =>
         stockStats = await StockService.GetStatisticsAsync(
-            new StockRequest(
-                quote.TickerSymbol,
-                quote.RegionCode
-            ));
+            new(quote.TickerSymbol, quote.RegionCode));
 
     protected override void OnInitialized() =>
         quote = new StockQuote
