@@ -21,8 +21,6 @@ namespace BlazorServerConfiguration
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.Configure<StockOptions>(Configuration.GetSection(nameof(StockOptions)));
-            //TODO: demonstrate validation by deleting one of the required properties from appsettings.json
             services.AddOptions<StockOptions>()
                     .Bind(Configuration.GetSection(nameof(StockOptions)))
                     .ValidateDataAnnotations();
