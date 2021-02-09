@@ -46,16 +46,7 @@ namespace BlazorServerConfiguration
         {
             if (HostEnvironment.IsDevelopment())
             {
-                var sb = new StringBuilder();
-                sb.AppendLine("Configuration keys");
-                sb.AppendLine("==================");
-                foreach (var (key, _) in Configuration.AsEnumerable().OrderBy(c => c.Key))
-                {
-                    sb.AppendLine(key);
-                }
-                sb.AppendLine("==================");
-                logger.LogInformation(sb.ToString());
-
+                LogConfigurationKeys(logger);
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -72,6 +63,20 @@ namespace BlazorServerConfiguration
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+        }
+
+        private void LogConfigurationKeys(ILogger<Startup> logger)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.AppendLine("Configuration keys");
+            sb.AppendLine("==================");
+            foreach (var (key, _) in Configuration.AsEnumerable().OrderBy(c => c.Key))
+            {
+                sb.AppendLine(key);
+            }
+            sb.AppendLine("==================");
+            logger.LogInformation(sb.ToString());
         }
     }
 }
