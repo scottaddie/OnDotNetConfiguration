@@ -6,7 +6,10 @@ namespace BlazorServerConfiguration.Models
     {
         [Required]
         public string ApiKey { get; init; } = null!;
-        
+
+        [Range(0, 1000)]
+        public double CacheDurationInMinutes { get; init; }
+
         [Required]
         public string Endpoint { get; init; } = null!;
 

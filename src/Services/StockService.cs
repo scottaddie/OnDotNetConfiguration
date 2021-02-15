@@ -12,6 +12,7 @@ namespace BlazorServerConfiguration.Services
     {
         private readonly HttpClient _httpClient;
         private readonly IMemoryCache _cache;
+        private readonly StockOptions _stockOptions;
 
         public StockService(
             HttpClient httpClient,
@@ -21,10 +22,10 @@ namespace BlazorServerConfiguration.Services
             _httpClient = httpClient;
             _cache = cache;
 
-            var stockOptions = stockConfiguration.Value;
-            _httpClient.BaseAddress = new(stockOptions.Endpoint);
-            _httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Host", stockOptions.HostName);
-            _httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Key", stockOptions.ApiKey);
+            _stockOptions = stockConfiguration.Value;
+            _httpClient.BaseAddress = new(_stockOptions.Endpoint);
+            _httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Host", _stockOptions.HostName);
+            _httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Key", _stockOptions.ApiKey);
         }
 
         public async ValueTask<StockStats> GetStatisticsAsync(StockRequest request)
@@ -43,7 +44,7 @@ namespace BlazorServerConfiguration.Services
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions
                 {
-                    SlidingExpiration = TimeSpan.FromMinutes(60)
+                    SlidingExpiration = TimeSpan.FromMinutes(_stockOptions.CacheDurationInMinutes)
                 };
 
                 // save data to cache
