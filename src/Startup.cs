@@ -2,6 +2,7 @@ using BlazorServerConfiguration.Models;
 using BlazorServerConfiguration.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -58,6 +59,11 @@ namespace BlazorServerConfiguration
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGet("config", async context =>
+                {
+                    var configInfo = (Configuration as IConfigurationRoot).GetDebugView();
+                    await context.Response.WriteAsync(configInfo);
+                });
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
