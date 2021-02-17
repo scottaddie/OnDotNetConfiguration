@@ -9,7 +9,7 @@ namespace BlazorServerConfiguration.Pages
     [IgnoreAntiforgeryToken]
     public class ErrorModel : PageModel
     {
-        public string RequestId { get; set; }
+        public string? RequestId { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
@@ -20,9 +20,7 @@ namespace BlazorServerConfiguration.Pages
             _logger = logger;
         }
 
-        public void OnGet()
-        {
+        public void OnGet() =>
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-        }
     }
 }
