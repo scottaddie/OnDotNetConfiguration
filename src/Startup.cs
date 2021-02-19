@@ -59,11 +59,15 @@ namespace BlazorServerConfiguration
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("config", async context =>
+                if (HostEnvironment.IsDevelopment())
                 {
-                    var configInfo = (Configuration as IConfigurationRoot).GetDebugView();
-                    await context.Response.WriteAsync(configInfo);
-                });
+                    endpoints.MapGet("config", async context =>
+                    {
+                        var configInfo = (Configuration as IConfigurationRoot).GetDebugView();
+                        await context.Response.WriteAsync(configInfo);
+                    });
+                }
+
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
