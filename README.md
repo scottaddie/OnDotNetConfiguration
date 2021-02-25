@@ -1,6 +1,6 @@
 # OnDotNetConfiguration
 
-A sample ASP.NET Core 5.0 Blazor Server app to accompany the On .NET configuration/secrets management episode.
+A sample ASP.NET Core 5.0 Blazor Server app to accompany the On .NET Show's configuration/secrets management episode.
 
 ## Prerequisites
 
@@ -52,3 +52,10 @@ To run the project in Azure, complete the following steps:
 			1. Select **.NET 5** from the **.NET version** drop-down list.
 		1. In the **Platform settings** section, select **On** for the **Web sockets** and **ARR affinity** radio buttons.
 	1. In **Settings** > **Configuration** > **Application settings**, select **New application setting**. Create a new environment variable named `KEYVAULT_ENDPOINT` whose value is the Key Vault resource's URI (e.g., https://blazorserverconfigvault.vault.azure.net/).
+
+## Related resources
+
+- [Safe storage of app secrets in development in ASP.NET Core](https://docs.microsoft.com/aspnet/core/security/app-secrets)
+- [Azure Key Vault's official docs](https://docs.microsoft.com/azure/key-vault/general)
+- [Azure Key Vault configuration provider in ASP.NET Core](https://docs.microsoft.com/aspnet/core/security/key-vault-configuration)
+- [Tutorial: Use a managed identity to connect Key Vault to an Azure web app in .NET](https://docs.microsoft.com/azure/key-vault/general/tutorial-net-create-vault-azure-web-app)
