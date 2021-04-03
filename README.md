@@ -1,6 +1,6 @@
 # OnDotNetConfiguration
 
-A sample ASP.NET Core 5.0 Blazor Server app to accompany the On .NET Show's configuration/secrets management episode.
+A sample ASP.NET Core 5.0 Blazor Server app to accompany [Secretless apps with .NET and Azure Key Vault](https://channel9.msdn.com/Shows/On-NET/Secretless-apps-with-NET-and-Azure-Key-Vault).
 
 ## Prerequisites
 
