@@ -9,7 +9,7 @@
 
     public class QuoteType
     {
-        public string LongName { get; init; } = null!;
+        public string ShortName { get; init; } = null!;
     }
 
     public class Price

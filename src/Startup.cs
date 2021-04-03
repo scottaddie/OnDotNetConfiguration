@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.FeatureManagement;
 
 namespace BlazorServerConfiguration
 {
@@ -31,6 +32,8 @@ namespace BlazorServerConfiguration
                         .AddAzureSignalR(Configuration["Azure:SignalR:ConnectionString"]);
             }
 
+            services.AddAzureAppConfiguration();
+            services.AddFeatureManagement();
             services.AddMemoryCache();
             services.AddHttpClient();
             services.AddSingleton<StockService>();
@@ -48,6 +51,7 @@ namespace BlazorServerConfiguration
                 app.UseHsts();
             }
 
+            app.UseAzureAppConfiguration();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();

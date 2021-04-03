@@ -12,12 +12,11 @@ namespace BlazorServerConfiguration
 
         static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((context, config) =>
+                .ConfigureAppConfiguration((_, config) =>
                 {
-                    if (context.HostingEnvironment.IsProduction())
-                        config.ConfigureKeyVault();
-                    else
-                        config.WriteConfigurationSources();
+                    var builtConfig = config.Build();
+                    config.ConfigureAzAppConfiguration(
+                        builtConfig["Azure:AppConfiguration:Endpoint"]);
                 })
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }

@@ -1,19 +1,28 @@
-﻿@page "/stocks"
+﻿@page "/crypto"
 
 @using BlazorServerConfiguration.Models
 @using System.ComponentModel.DataAnnotations
 @inject BlazorServerConfiguration.Services.StockService StockService
 @inject Microsoft.Extensions.Options.IOptions<StockOptions> StockOptions
 
-<h1>Stock quote</h1>
+<h1>Crypto quote</h1>
 
 <EditForm Model="@quote" OnValidSubmit="@HandleValidSubmitAsync" class="form-inline">
     <div class="form-group mx-sm-3 mb-2">
         <label for="tickerSymbol">Ticker symbol:</label>
         <InputSelect @bind-Value="quote.TickerSymbol" class="form-control" id="tickerSymbol">
-            <option value="AMD">AMD</option>
-            <option value="GME">GME</option>
-            <option value="MSFT">MSFT</option>
+            <option value="BTC">BTC</option>
+            <option value="DOGE">DOGE</option>
+            <option value="ETH">ETH</option>
+        </InputSelect>
+    </div>
+    <div class="form-group mx-sm-3 mb-2">
+        <label for="currencyCode">Currency code:</label>
+        <InputSelect @bind-Value="quote.CurrencyCode" class="form-control" id="currencyCode">
+            <option value="CAD">CAD</option>
+            <option value="EUR">EUR</option>
+            <option value="INR">INR</option>
+            <option value="USD">USD</option>
         </InputSelect>
     </div>
     <div class="form-group mx-sm-3 mb-2">
@@ -64,25 +73,29 @@
 }
 
 @code {
-    private class StockQuote
+    private class CryptoQuote
     {
         [Required]
         public string TickerSymbol { get; set; } = null!;
 
+        [Required]
+        public string CurrencyCode { get; set; } = null!;
+
         public RegionCode RegionCode { get; set; }
     }
 
-    private StockQuote quote = null!;
+    private CryptoQuote quote = null!;
     private StockStats? stats;
 
     private async Task HandleValidSubmitAsync() =>
         stats = await StockService.GetStatisticsAsync(
-            new(quote.TickerSymbol, quote.RegionCode));
+            new($"{quote.TickerSymbol}-{quote.CurrencyCode}", quote.RegionCode));
 
     protected override void OnInitialized() =>
-        quote = new StockQuote
+        quote = new CryptoQuote
         {
             TickerSymbol = StockOptions.Value.TickerSymbol,
+            CurrencyCode = StockOptions.Value.CurrencyCode,
             RegionCode = StockOptions.Value.RegionCode
         };
 }

@@ -11,6 +11,9 @@ namespace BlazorServerConfiguration.Models
         public double CacheDurationInMinutes { get; init; }
 
         [Required]
+        public string CurrencyCode { get; init; } = null!;
+
+        [Required]
         public string Endpoint { get; init; } = null!;
 
         [Required]

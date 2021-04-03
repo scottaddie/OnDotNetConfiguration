@@ -1,4 +1,7 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@using BlazorServerConfiguration.Features
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Contoso Investments</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -17,15 +20,24 @@
                 <span class="oi oi-graph" aria-hidden="true"></span> Stocks
             </NavLink>
         </li>
+        @if (cryptoEnabled)
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="crypto">
+                    <span class="oi oi-graph" aria-hidden="true"></span> Cryptocurrency
+                </NavLink>
+            </li>
+        }
     </ul>
 </div>
 
 @code {
+    private bool cryptoEnabled;
     private bool collapseNavMenu = true;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+    protected override async Task OnInitializedAsync() =>
+        cryptoEnabled = await FeatureManager.IsEnabledAsync(nameof(Flags.Crypto));
+
+    private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
 }

@@ -1,36 +1,35 @@
-﻿using Azure.Extensions.AspNetCore.Configuration.Secrets;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
+﻿using Azure.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using System;
 
 namespace BlazorServerConfiguration.Extensions
 {
     public static class ConfigurationBuilderExtensions
     {
-        public static void ConfigureKeyVault(this IConfigurationBuilder config)
+        public static void ConfigureAzAppConfiguration(
+            this IConfigurationBuilder builder,
+            string? endpoint)
         {
-            string? keyVaultEndpoint = Environment.GetEnvironmentVariable("KEYVAULT_ENDPOINT");
+            if (endpoint is null)
+                throw new ArgumentNullException("App Configuration endpoint not provided.");
 
-            if (keyVaultEndpoint is null)
-                throw new InvalidOperationException("Store the Key Vault endpoint in a KEYVAULT_ENDPOINT environment variable.");
+            var credential = new DefaultAzureCredential();
 
-            var secretClient = new SecretClient(new(keyVaultEndpoint), new DefaultAzureCredential());
-            config.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
-        }
-
-        public static void WriteConfigurationSources(this IConfigurationBuilder config)
-        {
-            Console.WriteLine("Configuration sources\n=====================");
-            foreach (var source in config.Sources)
-            {
-                if (source is JsonConfigurationSource jsonSource)
-                    Console.WriteLine($"{source}: {jsonSource.Path}");
-                else
-                    Console.WriteLine(source.ToString());
-            }
-            Console.WriteLine("=====================\n");
+            builder.AddAzureAppConfiguration(options =>
+                options.Connect(new(endpoint), credential)
+                       .ConfigureKeyVault(vaultOptions =>
+                       {
+                           vaultOptions.SetCredential(credential);
+                       })
+                       .ConfigureRefresh(refreshOptions =>
+                       {
+                           refreshOptions.Register("Settings:Sentinel", refreshAll: true)
+                                         .SetCacheExpiration(new(0, 0, 10));
+                       })
+                       .UseFeatureFlags(flagOptions =>
+                       {
+                           flagOptions.CacheExpirationInterval = TimeSpan.FromSeconds(5);
+                       }));
         }
     }
 }
