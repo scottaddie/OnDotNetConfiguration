@@ -1,75 +1,84 @@
 ﻿@page "/crypto"
 
+@using BlazorServerConfiguration.Features
 @using BlazorServerConfiguration.Models
 @using System.ComponentModel.DataAnnotations
 @inject BlazorServerConfiguration.Services.StockService StockService
 @inject Microsoft.Extensions.Options.IOptions<StockOptions> StockOptions
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
 
-<h1>Crypto quote</h1>
-
-<EditForm Model="@quote" OnValidSubmit="@HandleValidSubmitAsync" class="form-inline">
-    <div class="form-group mx-sm-3 mb-2">
-        <label for="tickerSymbol">Ticker symbol:</label>
-        <InputSelect @bind-Value="quote.TickerSymbol" class="form-control" id="tickerSymbol">
-            <option value="BTC">BTC</option>
-            <option value="DOGE">DOGE</option>
-            <option value="ETH">ETH</option>
-        </InputSelect>
-    </div>
-    <div class="form-group mx-sm-3 mb-2">
-        <label for="currencyCode">Currency code:</label>
-        <InputSelect @bind-Value="quote.CurrencyCode" class="form-control" id="currencyCode">
-            <option value="CAD">CAD</option>
-            <option value="EUR">EUR</option>
-            <option value="INR">INR</option>
-            <option value="USD">USD</option>
-        </InputSelect>
-    </div>
-    <div class="form-group mx-sm-3 mb-2">
-        <label for="regionCode">Region code:</label>
-        <InputSelect @bind-Value="quote.RegionCode" class="form-control" id="regionCode">
-            <option value="US">US</option>
-            <option value="BR">BR</option>
-            <option value="AU">AU</option>
-            <option value="CA">CA</option>
-            <option value="FR">FR</option>
-            <option value="DE">DE</option>
-            <option value="HK">HK</option>
-            <option value="IN">IN</option>
-            <option value="IT">IT</option>
-            <option value="ES">ES</option>
-            <option value="GB">GB</option>
-            <option value="SG">SG</option>
-        </InputSelect>
-    </div>
-    <button type="submit" class="btn btn-primary mb-2">Get Quote</button>
-</EditForm>
-
-@if (stats is not null)
+@if (cryptoEnabled)
 {
-    <p>Market state: @stats.Price.MarketState</p>
+    <h1>Crypto quote</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Quote Source</th>
-                <th>Regular Market Price</th>
-                <th>Regular Market Change</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>@stats.QuoteType.ShortName</td>
-                <td>@stats.Price.QuoteSourceName</td>
-                <td>@stats.Price.ToString()</td>
-                <td class="text-@(stats.Price.RegularMarketChangePercent.IsLoss ? "danger" : "success")">
-                    <span class="oi oi-caret-@(stats.Price.RegularMarketChangePercent.IsLoss ? "bottom" : "top")" aria-hidden="true"></span>
-                    @stats.Price.RegularMarketChangePercent.Fmt (@stats.Price.RegularMarketChange.Fmt)
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <EditForm Model="@quote" OnValidSubmit="@HandleValidSubmitAsync" class="form-inline">
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="tickerSymbol">Ticker symbol:</label>
+            <InputSelect @bind-Value="quote.TickerSymbol" class="form-control" id="tickerSymbol">
+                <option value="BTC">BTC</option>
+                <option value="DOGE">DOGE</option>
+                <option value="ETH">ETH</option>
+            </InputSelect>
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="currencyCode">Currency code:</label>
+            <InputSelect @bind-Value="quote.CurrencyCode" class="form-control" id="currencyCode">
+                <option value="CAD">CAD</option>
+                <option value="EUR">EUR</option>
+                <option value="INR">INR</option>
+                <option value="USD">USD</option>
+            </InputSelect>
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="regionCode">Region code:</label>
+            <InputSelect @bind-Value="quote.RegionCode" class="form-control" id="regionCode">
+                <option value="US">US</option>
+                <option value="BR">BR</option>
+                <option value="AU">AU</option>
+                <option value="CA">CA</option>
+                <option value="FR">FR</option>
+                <option value="DE">DE</option>
+                <option value="HK">HK</option>
+                <option value="IN">IN</option>
+                <option value="IT">IT</option>
+                <option value="ES">ES</option>
+                <option value="GB">GB</option>
+                <option value="SG">SG</option>
+            </InputSelect>
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Get Quote</button>
+    </EditForm>
+
+    @if (stats is not null)
+    {
+        <p>Market state: @stats.Price.MarketState</p>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Quote Source</th>
+                    <th>Regular Market Price</th>
+                    <th>Regular Market Change</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@stats.QuoteType.ShortName</td>
+                    <td>@stats.Price.QuoteSourceName</td>
+                    <td>@stats.Price.ToString()</td>
+                    <td class="text-@(stats.Price.RegularMarketChangePercent.IsLoss ? "danger" : "success")">
+                        <span class="oi oi-caret-@(stats.Price.RegularMarketChangePercent.IsLoss ? "bottom" : "top")" aria-hidden="true"></span>
+                        @stats.Price.RegularMarketChangePercent.Fmt (@stats.Price.RegularMarketChange.Fmt)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    }
+}
+else
+{
+    <h1>Page unavailable</h1>
 }
 
 @code {
@@ -86,16 +95,24 @@
 
     private CryptoQuote quote = null!;
     private StockStats? stats;
+    private bool cryptoEnabled;
 
     private async Task HandleValidSubmitAsync() =>
         stats = await StockService.GetStatisticsAsync(
             new($"{quote.TickerSymbol}-{quote.CurrencyCode}", quote.RegionCode));
 
-    protected override void OnInitialized() =>
-        quote = new CryptoQuote
+    protected override async Task OnInitializedAsync()
+    {
+        cryptoEnabled = await FeatureManager.IsEnabledAsync(nameof(Flags.Crypto));
+
+        if (cryptoEnabled)
         {
-            TickerSymbol = StockOptions.Value.TickerSymbol,
-            CurrencyCode = StockOptions.Value.CurrencyCode,
-            RegionCode = StockOptions.Value.RegionCode
-        };
+            quote = new CryptoQuote
+            {
+                TickerSymbol = StockOptions.Value.TickerSymbol,
+                CurrencyCode = StockOptions.Value.CurrencyCode,
+                RegionCode = StockOptions.Value.RegionCode
+            };
+        }
+    }
 }
