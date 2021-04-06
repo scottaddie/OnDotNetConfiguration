@@ -2,7 +2,7 @@
 
 namespace BlazorServerConfiguration.Models
 {
-    public class StockOptions
+    public class QuoteOptions
     {
         [Required]
         public string ApiKey { get; init; } = null!;
@@ -18,10 +18,9 @@ namespace BlazorServerConfiguration.Models
 
         [Required]
         public string HostName { get; init; } = null!;
-        
-        public RegionCode RegionCode { get; init; }
 
-        [Required, StringLength(maximumLength: 5, MinimumLength = 1)]
-        public string TickerSymbol { get; init; } = null!;
+        public CryptoQuote? CryptoQuote { get; set; }
+
+        public StockQuote? StockQuote { get; set; }
     }
 }

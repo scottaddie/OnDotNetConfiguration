@@ -2,7 +2,7 @@
 
 namespace BlazorServerConfiguration.Models
 {
-    public record StockRequest(
+    public record QuoteRequest(
         [Required] string Symbol,
         RegionCode Region
     );

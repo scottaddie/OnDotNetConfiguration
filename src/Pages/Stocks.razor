@@ -1,16 +1,15 @@
 ﻿@page "/stocks"
 
 @using BlazorServerConfiguration.Models
-@using System.ComponentModel.DataAnnotations
-@inject BlazorServerConfiguration.Services.StockService StockService
-@inject Microsoft.Extensions.Options.IOptions<StockOptions> StockOptions
+@inject BlazorServerConfiguration.Services.QuoteService QuoteService
+@inject Microsoft.Extensions.Options.IOptions<QuoteOptions> QuoteOptions
 
 <h1>Stock quote</h1>
 
 <EditForm Model="@quote" OnValidSubmit="@HandleValidSubmitAsync" class="form-inline">
     <div class="form-group mx-sm-3 mb-2">
         <label for="tickerSymbol">Ticker symbol:</label>
-        <InputSelect @bind-Value="quote.TickerSymbol" class="form-control" id="tickerSymbol">
+        <InputSelect @bind-Value="quote.Symbol" class="form-control" id="tickerSymbol">
             <option value="AMD">AMD</option>
             <option value="GME">GME</option>
             <option value="MSFT">MSFT</option>
@@ -36,53 +35,30 @@
     <button type="submit" class="btn btn-primary mb-2">Get Quote</button>
 </EditForm>
 
-@if (stats is not null)
-{
-    <p>Market state: @stats.Price.MarketState</p>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Quote Source</th>
-                <th>Regular Market Price</th>
-                <th>Regular Market Change</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>@stats.QuoteType.ShortName</td>
-                <td>@stats.Price.QuoteSourceName</td>
-                <td>@stats.Price.ToString()</td>
-                <td class="text-@(stats.Price.RegularMarketChangePercent.IsLoss ? "danger" : "success")">
-                    <span class="oi oi-caret-@(stats.Price.RegularMarketChangePercent.IsLoss ? "bottom" : "top")" aria-hidden="true"></span>
-                    @stats.Price.RegularMarketChangePercent.Fmt (@stats.Price.RegularMarketChange.Fmt)
-                </td>
-            </tr>
-        </tbody>
-    </table>
-}
+<QuoteResult Stats="@stats" />
 
 @code {
-    private class StockQuote
-    {
-        [Required]
-        public string TickerSymbol { get; set; } = null!;
+    private StockQuote? quote;
+    private QuoteStats? stats;
 
-        public RegionCode RegionCode { get; set; }
+    private async Task HandleValidSubmitAsync()
+    {
+        if (quote is not null)
+        {
+            stats = await QuoteService.GetStatisticsAsync(
+                new(quote.Symbol, quote.RegionCode));
+        }
     }
 
-    private StockQuote quote = null!;
-    private StockStats? stats;
-
-    private async Task HandleValidSubmitAsync() =>
-        stats = await StockService.GetStatisticsAsync(
-            new(quote.TickerSymbol, quote.RegionCode));
-
-    protected override void OnInitialized() =>
-        quote = new StockQuote
+    protected override void OnInitialized()
+    {
+        if (QuoteOptions.Value.StockQuote is not null)
         {
-            TickerSymbol = StockOptions.Value.TickerSymbol,
-            RegionCode = StockOptions.Value.RegionCode
-        };
+            quote = new StockQuote
+            {
+                Symbol = QuoteOptions.Value.StockQuote.Symbol,
+                RegionCode = QuoteOptions.Value.StockQuote.RegionCode
+            };
+        }
+    }
 }

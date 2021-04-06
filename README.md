@@ -18,8 +18,8 @@ Before running the project on your machine, store the API key using one of the f
 		
 	```json
 	{
-		"StockOptions": {
-		"ApiKey": "<API_KEY>"
+		"QuoteOptions": {
+			"ApiKey": "<API_KEY>"
 		}
 	}
 	```
@@ -27,7 +27,7 @@ Before running the project on your machine, store the API key using one of the f
 - If not using Visual Studio, replace `<API_KEY>` in the following command with your API key. Run the command from the directory containing the *BlazorServerConfiguration.csproj* file.
 
 	```bash
-	dotnet user-secrets set "StockOptions:ApiKey" "<API_KEY>"
+	dotnet user-secrets set "QuoteOptions:ApiKey" "<API_KEY>"
 	```
 
 ### Azure resources
@@ -42,7 +42,7 @@ To run the project in Azure, complete the following steps:
 	|Name								  |Value				|
 	|-------------------------------------|---------------------|
 	|`Azure--SignalR--ConnectionString`|The primary or secondary SignalR Service connection string found at **Settings** > **Keys**. For example, `Endpoint=https://blazorserverconfigsignalr.service.signalr.net;AccessKey=<ACCESS_KEY>;Version=1.0;`.|
-	|`StockOptions--ApiKey`			  |The API key obtained from RapidAPI.|
+	|`QuoteOptions--ApiKey`			  |The API key obtained from RapidAPI.|
 
 1. Apply the following changes in App Service:
 	1. In **Settings** > **Identity**, enable a System-assigned managed identity via the **Status** toggle button.
@@ -55,7 +55,7 @@ To run the project in Azure, complete the following steps:
 
 ## Related resources
 
-- [Safe storage of app secrets in development in ASP.NET Core](https://docs.microsoft.com/aspnet/core/security/app-secrets)
-- [Azure Key Vault's official docs](https://docs.microsoft.com/azure/key-vault/general)
-- [Azure Key Vault configuration provider in ASP.NET Core](https://docs.microsoft.com/aspnet/core/security/key-vault-configuration)
-- [Tutorial: Use a managed identity to connect Key Vault to an Azure web app in .NET](https://docs.microsoft.com/azure/key-vault/general/tutorial-net-create-vault-azure-web-app)
+- [Create an ASP.NET Core app with Azure App Configuration](https://docs.microsoft.com/azure/azure-app-configuration/quickstart-aspnet-core-app)
+- [Add feature flags to an ASP.NET Core app](https://docs.microsoft.com/azure/azure-app-configuration/quickstart-feature-flag-aspnet-core)
+- [Use feature flags in an ASP.NET Core app](https://docs.microsoft.com/azure/azure-app-configuration/use-feature-flags-dotnet-core)
+- [Use Key Vault references in an ASP.NET Core app](https://docs.microsoft.com/azure/azure-app-configuration/use-key-vault-references-dotnet-core)

@@ -1,0 +1,33 @@
+﻿@using BlazorServerConfiguration.Models
+
+@if (Stats is not null)
+{
+    <p>Market state: @Stats.Price.MarketState</p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Quote Source</th>
+                <th>Regular Market Price</th>
+                <th>Regular Market Change</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Stats.QuoteType.ShortName</td>
+                <td>@Stats.Price.QuoteSourceName</td>
+                <td>@Stats.Price.ToString()</td>
+                <td class="text-@(Stats.Price.RegularMarketChangePercent.IsLoss ? "danger" : "success")">
+                    <span class="oi oi-caret-@(Stats.Price.RegularMarketChangePercent.IsLoss ? "bottom" : "top")" aria-hidden="true"></span>
+                    @Stats.Price.RegularMarketChangePercent.Fmt (@Stats.Price.RegularMarketChange.Fmt)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public QuoteStats? Stats { get; set; }
+}

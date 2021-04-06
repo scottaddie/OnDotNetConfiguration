@@ -1,6 +1,6 @@
 ﻿namespace BlazorServerConfiguration.Models
 {
-    public class StockStats
+    public class QuoteStats
     {
         public QuoteType QuoteType { get; init; } = null!;
 

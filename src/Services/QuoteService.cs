@@ -8,31 +8,31 @@ using System.Threading.Tasks;
 
 namespace BlazorServerConfiguration.Services
 {
-    public class StockService
+    public class QuoteService
     {
         private readonly HttpClient _httpClient;
         private readonly IMemoryCache _cache;
-        private readonly StockOptions _stockOptions;
+        private readonly QuoteOptions _quoteOptions;
 
-        public StockService(
+        public QuoteService(
             HttpClient httpClient,
             IMemoryCache cache,
-            IOptions<StockOptions> stockConfiguration)
+            IOptions<QuoteOptions> quoteConfiguration)
         {
             _httpClient = httpClient;
             _cache = cache;
 
-            _stockOptions = stockConfiguration.Value;
-            _httpClient.BaseAddress = new(_stockOptions.Endpoint);
-            _httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Host", _stockOptions.HostName);
-            _httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Key", _stockOptions.ApiKey);
+            _quoteOptions = quoteConfiguration.Value;
+            _httpClient.BaseAddress = new(_quoteOptions.Endpoint);
+            _httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Host", _quoteOptions.HostName);
+            _httpClient.DefaultRequestHeaders.Add("X-RapidAPI-Key", _quoteOptions.ApiKey);
         }
 
-        public async ValueTask<StockStats> GetStatisticsAsync(StockRequest request)
+        public async ValueTask<QuoteStats> GetStatisticsAsync(QuoteRequest request)
         {
             var cacheKey = $"{request.Symbol}_{request.Region}";
 
-            if (!_cache.TryGetValue(cacheKey, out StockStats? stats))
+            if (!_cache.TryGetValue(cacheKey, out QuoteStats? stats))
             {
                 // key not in cache, so fetch data
 
@@ -40,11 +40,11 @@ namespace BlazorServerConfiguration.Services
                 var response = await _httpClient.GetAsync(queryString);
 
                 response.EnsureSuccessStatusCode();
-                stats = await response.Content.ReadFromJsonAsync<StockStats>();
+                stats = await response.Content.ReadFromJsonAsync<QuoteStats>();
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions
                 {
-                    SlidingExpiration = TimeSpan.FromMinutes(_stockOptions.CacheDurationInMinutes)
+                    SlidingExpiration = TimeSpan.FromMinutes(_quoteOptions.CacheDurationInMinutes)
                 };
 
                 // save data to cache

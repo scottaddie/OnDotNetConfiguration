@@ -20,8 +20,8 @@ namespace BlazorServerConfiguration
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOptions<StockOptions>()
-                    .Bind(Configuration.GetSection(nameof(StockOptions)))
+            services.AddOptions<QuoteOptions>()
+                    .Bind(Configuration.GetSection(nameof(QuoteOptions)))
                     .ValidateDataAnnotations();
             services.AddRazorPages();
             services.AddServerSideBlazor();
@@ -36,7 +36,7 @@ namespace BlazorServerConfiguration
             services.AddFeatureManagement();
             services.AddMemoryCache();
             services.AddHttpClient();
-            services.AddSingleton<StockService>();
+            services.AddSingleton<QuoteService>();
         }
 
         public void Configure(IApplicationBuilder app)

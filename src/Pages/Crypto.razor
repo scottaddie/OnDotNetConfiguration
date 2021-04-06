@@ -2,9 +2,8 @@
 
 @using BlazorServerConfiguration.Features
 @using BlazorServerConfiguration.Models
-@using System.ComponentModel.DataAnnotations
-@inject BlazorServerConfiguration.Services.StockService StockService
-@inject Microsoft.Extensions.Options.IOptions<StockOptions> StockOptions
+@inject BlazorServerConfiguration.Services.QuoteService QuoteService
+@inject Microsoft.Extensions.Options.IOptions<QuoteOptions> QuoteOptions
 @inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
 
 @if (cryptoEnabled)
@@ -14,7 +13,7 @@
     <EditForm Model="@quote" OnValidSubmit="@HandleValidSubmitAsync" class="form-inline">
         <div class="form-group mx-sm-3 mb-2">
             <label for="tickerSymbol">Ticker symbol:</label>
-            <InputSelect @bind-Value="quote.TickerSymbol" class="form-control" id="tickerSymbol">
+            <InputSelect @bind-Value="quote.Symbol" class="form-control" id="tickerSymbol">
                 <option value="BTC">BTC</option>
                 <option value="DOGE">DOGE</option>
                 <option value="ETH">ETH</option>
@@ -49,32 +48,7 @@
         <button type="submit" class="btn btn-primary mb-2">Get Quote</button>
     </EditForm>
 
-    @if (stats is not null)
-    {
-        <p>Market state: @stats.Price.MarketState</p>
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Quote Source</th>
-                    <th>Regular Market Price</th>
-                    <th>Regular Market Change</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>@stats.QuoteType.ShortName</td>
-                    <td>@stats.Price.QuoteSourceName</td>
-                    <td>@stats.Price.ToString()</td>
-                    <td class="text-@(stats.Price.RegularMarketChangePercent.IsLoss ? "danger" : "success")">
-                        <span class="oi oi-caret-@(stats.Price.RegularMarketChangePercent.IsLoss ? "bottom" : "top")" aria-hidden="true"></span>
-                        @stats.Price.RegularMarketChangePercent.Fmt (@stats.Price.RegularMarketChange.Fmt)
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    }
+    <QuoteResult Stats="@stats" />
 }
 else
 {
@@ -82,36 +56,30 @@ else
 }
 
 @code {
-    private class CryptoQuote
-    {
-        [Required]
-        public string TickerSymbol { get; set; } = null!;
-
-        [Required]
-        public string CurrencyCode { get; set; } = null!;
-
-        public RegionCode RegionCode { get; set; }
-    }
-
-    private CryptoQuote quote = null!;
-    private StockStats? stats;
+    private CryptoQuote? quote;
+    private QuoteStats? stats;
     private bool cryptoEnabled;
 
-    private async Task HandleValidSubmitAsync() =>
-        stats = await StockService.GetStatisticsAsync(
-            new($"{quote.TickerSymbol}-{quote.CurrencyCode}", quote.RegionCode));
+    private async Task HandleValidSubmitAsync()
+    {
+        if (quote is not null)
+        {
+            stats = await QuoteService.GetStatisticsAsync(
+                new($"{quote.Symbol}-{quote.CurrencyCode}", quote.RegionCode));
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         cryptoEnabled = await FeatureManager.IsEnabledAsync(nameof(Flags.Crypto));
 
-        if (cryptoEnabled)
+        if (cryptoEnabled && QuoteOptions.Value.CryptoQuote is not null)
         {
             quote = new CryptoQuote
             {
-                TickerSymbol = StockOptions.Value.TickerSymbol,
-                CurrencyCode = StockOptions.Value.CurrencyCode,
-                RegionCode = StockOptions.Value.RegionCode
+                Symbol = QuoteOptions.Value.CryptoQuote.Symbol,
+                CurrencyCode = QuoteOptions.Value.CryptoQuote.CurrencyCode,
+                RegionCode = QuoteOptions.Value.CryptoQuote.RegionCode
             };
         }
     }
