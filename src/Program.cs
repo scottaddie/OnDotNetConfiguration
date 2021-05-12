@@ -1,6 +1,7 @@
 using BlazorServerConfiguration.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.Threading.Tasks;
 
 namespace BlazorServerConfiguration
@@ -14,9 +15,8 @@ namespace BlazorServerConfiguration
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((_, config) =>
                 {
-                    var builtConfig = config.Build();
                     config.ConfigureAzAppConfiguration(
-                        builtConfig["Azure:AppConfiguration:Endpoint"]);
+                        Environment.GetEnvironmentVariable("AZURE_APPCONFIG_ENDPOINT"));
                 })
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }
